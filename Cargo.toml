@@ -1,5 +1,5 @@
 [package]
-name = "rustafl"
+name = "crabbybuddy"
 version = "0.1.0"
 edition = "2024"
 
@@ -17,5 +17,3 @@ codegen-units = 1
 lto = "fat"
 panic = "abort"
 strip = true
-
-# RUSTFLAGS="-C target-cpu=native -C lto=fat" cargo build --release --target x86_64-unknown-linux-gnu
