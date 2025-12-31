@@ -1,4 +1,4 @@
-# AI Chat CLI
+# Crabby Buddy
 
 A simple command-line interface for interacting with AI chat services, built in Rust.
 
