@@ -1,3 +1,4 @@
+[![Rust](https://img.shields.io/badge/rust-1.70%2B-orange.svg)](https://www.rust-lang.org/)
 # Crabby Buddy
 
 A simple command-line interface for interacting with AI chat services, built in Rust.
