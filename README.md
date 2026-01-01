@@ -1,7 +1,7 @@
-[![Rust](https://img.shields.io/badge/rust-1.70%2B-orange.svg)](https://www.rust-lang.org/)
+[![Rust](https://img.shields.io/badge/rust-1.92-orange.svg)](https://www.rust-lang.org/)
 # Crabby Buddy
 
-A simple command-line interface for interacting with AI chat services, built in Rust.
+A simple command-line interface for interacting with AI chat services, built in Rust. It uses [ApiFreeLLM](https://apifreellm.com/) as its AI api.
 
 ## Features
 
@@ -49,7 +49,7 @@ Add to your `Cargo.toml`:
 crabbybuddy = "0.1.0"
 ```
 
-Use in your code:
+In your code, you can follow this example:
 ```rust
 use crabbybuddy::ApiFreeLLM;
 
@@ -59,3 +59,4 @@ async fn main() {
     println!("{}", response.get_resp());
 }
 ```
+or, check `main.rs`!
