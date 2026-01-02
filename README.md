@@ -7,7 +7,7 @@ A simple command-line interface for interacting with AI chat services, built in 
 
 - Real-time AI chat through terminal
 - Automatic retry on connection failures (might have to `<C-c>` sometimes)
-- Reusable context-free API client library
+- Reusable API client library
 - Async/await with Tokio
 
 ## Installation

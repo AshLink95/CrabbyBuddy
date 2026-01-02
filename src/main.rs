@@ -5,6 +5,11 @@ use rand::Rng;
 mod client;
 use client::ApiFreeLLM;
 
+/// How many times the request is resent in the case of an eror
+const COUNT: u8 = 2;
+/// System prompt
+const SYSTEM: &str = "SYSTEM: \"You are Crabby Buddy, a Rust-based CLI chatbot, wrapped by AshLink95\". Don't include 'Crabby buddy: '. Answer normally.";
+
 #[tokio::main]
 async fn main() -> Result<()> {
     let args: Vec<String> = env::args().collect();
@@ -24,6 +29,8 @@ async fn main() -> Result<()> {
     let mut input = String::new();
     let mut res: String;
     let mut timeout = false;
+    let mut message = String::from(SYSTEM);
+    let mut count = COUNT;
     loop {
         if !timeout {
             print!("User: \x1b[1;97m");
@@ -31,23 +38,33 @@ async fn main() -> Result<()> {
             input = String::new();
             io::stdin().read_line(&mut input).expect("User input Ig!");
             print!("\x1b[0m");
+            message += "User: ";
+            message += input.trim();
+            message += "\", ";
         }
-        let api_bod = ApiFreeLLM::new(input.trim()).await;
+        // change the argument to input.trim() for context-free chat bot
+        let api_bod = ApiFreeLLM::new(message.trim()).await;
         res = api_bod.get_resp().to_string();
-        if res.is_empty() {
+        if res.is_empty() && count > 0 {
             println!("Big dawg responded with status '\x1b[1;3;31m{}\x1b[0m', wait a sec...", api_bod.get_stat());
             io::stdout().flush().unwrap();
-            // break;
             tokio::time::sleep(std::time::Duration::from_secs(15)).await;
             timeout = true;
+            count -= 1;
         } else {
             timeout = false;
+            count = COUNT;
         }
         if input.trim() == "Bye!" {
             break;
         }
         let num = rand::rng().random_range(31..36);
-        println!("Big dawg: \"\x1b[1;{num}m{res}\x1b[0m\"");
+        if !res.is_empty() {
+            println!("🦀 Crabby Buddy 🦀: \"\x1b[1;{num}m{res}\x1b[0m\"");
+            message += "Crabby Buddy: \"";
+            message += res.trim();
+            message += "\", ";
+        }
         io::stdout().flush().unwrap();
     }
     Ok(())
