@@ -18,12 +18,13 @@ git clone https://github.com/AshLink95/CrabbyBuddy.git
 cd CrabbyBuddy
 cargo build --release
 ```
-For an optimized build on Linux, if you're using an nvidia gpu, consider:
+For an optimized build on Linux, consider:
 ```bash
-RUSTFLAGS="-C target-cpu=native -C lto=fat" cargo build --release --target x86_64-unknown-linux-gnu --features cuda
+RUSTFLAGS="-C target-cpu=native -C lto=fat" cargo build --release --target x86_64-unknown-linux-gnu
 ```
-> [!note] Not using a nvidia gpu
-> Drop the `--features` flag
+> [!note] `--features`
+> The build will be CPU only unless you use this flag.  
+> If you're using a nvidia GPU, append `--features cuda`. For any other gpu, use `--features vulkan`
 
 With these flags, the binary should be at:
 ```
