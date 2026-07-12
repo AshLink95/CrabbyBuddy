@@ -1,14 +1,14 @@
 [![Rust](https://img.shields.io/badge/rust-1.92-orange.svg)](https://www.rust-lang.org/)
 # Crabby Buddy
-
-A simple command-line interface for interacting with AI chat services, built in Rust. It uses [ApiFreeLLM](https://apifreellm.com/) as its AI api.
+A simple command-line interface for chatting with local LLMs, built in Rust. It runs GGUF models locally via [llama.cpp](https://github.com/ggerganov/llama.cpp) (through the `llama-cpp-2` bindings) — no API, no network.
 
 ## Features
 
-- Real-time AI chat through terminal
-- Automatic retry on connection failures (might have to `<C-c>` sometimes)
-- Reusable API client library
-- Async/await with Tokio
+- Real-time AI chat through the terminal
+- Runs local GGUF models on CPU/GPU (GPU offload enabled by default)
+- Persistent sessions with fast KV-cache resume, plus an incognito mode
+- Interactive arrow-key picker for models and sessions
+- Vi-style line editing and input history
 
 ## Installation
 
@@ -18,20 +18,28 @@ git clone https://github.com/AshLink95/CrabbyBuddy.git
 cd CrabbyBuddy
 cargo build --release
 ```
-
-For an optimized build on linux, consider
+For an optimized build on Linux, if you're using an nvidia gpu, consider:
 ```bash
-RUSTFLAGS="-C target-cpu=native -C lto=fat" cargo build --release --target x86_64-unknown-linux-gnu
+RUSTFLAGS="-C target-cpu=native -C lto=fat" cargo build --release --target x86_64-unknown-linux-gnu --features cuda
+```
+> [!note] Not using a nvidia gpu
+> Drop the `--features` flag
+
+With these flags, the binary should be at:
+```
+CrabbyBuddy/target/x86_64-unknown-linux-gnu/release/crabbybuddy
 ```
 
-Using the optimal build flag, the binary will be available at 
+## Setup
+Crabby Buddy reads models and stores sessions under your local data directory:
 ```
-Crabbybuddy/target/x86_64-unknown-linux-gnu/release/crabbybuddy
+$XDG_DATA_HOME/crabbybuddy/     (typically ~/.local/share/crabbybuddy/)
+├── models/     # put your .gguf model files here
+└── sessions/   # persistent sessions are saved here automatically
 ```
+Drop one or more `.gguf` files into `models/` before running.
 
 ## Usage
-
-### As a CLI tool
 ```bash
 # Start chatting
 crabbybuddy
@@ -39,24 +47,6 @@ crabbybuddy
 # Show help
 crabbybuddy --help
 ```
+On launch you'll pick a model, then choose a session: **go incognito** (nothing saved), an existing saved session, or **new chat** (creates a persistent session). Navigate with the arrow keys (or `j`/`k`) and press Enter to select.
 
-Type your messages and press Enter. Type `Bye!` to exit.
-
-### As a library
-Add to your `Cargo.toml`:
-```toml
-[dependencies]
-crabbybuddy = "0.1.0"
-```
-
-In your code, you can follow this example:
-```rust
-use crabbybuddy::ApiFreeLLM;
-
-#[tokio::main]
-async fn main() {
-    let response = ApiFreeLLM::new("Hello, AI!").await;
-    println!("{}", response.get_resp());
-}
-```
-or, check `main.rs`!
+Type your messages and press Enter. Type `\bye!` or press `Ctrl-C` to exit.
