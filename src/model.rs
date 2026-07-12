@@ -37,6 +37,7 @@ fn load(model_idx: usize) -> Result<(&'static LlamaModel, LlamaContext<'static>,
     } else { ChatFormat::Native };
     let model = Box::leak(Box::new(LlamaModel::load_from_file(
         backend, model_path.trim(),
+        //TODO: load gpu layers based on model meta data
         &LlamaModelParams::default().with_n_gpu_layers(u32::MAX),
     )?));
     let cntx = model.new_context( backend,
